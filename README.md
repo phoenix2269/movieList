@@ -1,9 +1,9 @@
 Pokedex Web App
 
 Description
-List of Pokemon from Pokedex using API calls to populate the list, create buttons, and get the details.  The details are displayed in a pop-up modal.
+List of Top 100 Movies from IMDB using API calls to populate the list, create buttons, and get the details.  The details are displayed in a pop-up modal.
 
-View At: https://phoenix2269.github.io/simple-js-app/
+View At: https://phoenix2269.github.io/movieList/
 
 Languages Used
 * HTML
@@ -13,9 +13,7 @@ Languages Used
 * Bootstrap
 
 Sources & Credits
-* PokeAPI Documentation
-* PokeAPI
+* IMDB
 * Promise Polyfill
 * Fetch Polyfill
-* Freepngimg
-* freeiconspng
+
