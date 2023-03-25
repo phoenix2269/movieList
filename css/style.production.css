@@ -11,7 +11,7 @@ h1 {
   text-align: center;
 }
 
-#pokemon-list {
+#movie-list {
   text-align: center;
 }
 
@@ -21,11 +21,9 @@ h1 {
   color: blue;
   width: 200px;
   height: 70px;
-  padding: 15px 32px;
-  margin: 10px;
   text-align: center;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 85%;
   border-radius: 10px;
 }
 
@@ -35,9 +33,4 @@ h1 {
 
 .navbar-brand {
   font-size: 30px;
-}
-
-#pokeballPng {
-  height: 70px;
-  width: 70px;
 }
