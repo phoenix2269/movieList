@@ -1,61 +1,66 @@
-let pokemonRepository = (function () {
-    let pokemonList = [];
-    let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
+let movieRepository = (function () {
+    let movieList = [];
+    let apiUrl = 'https://imdb-api.com/en/API/MostPopularMovies/k_vfofrs3q';
 
-    function addv(pokemon) {
-        return (typeof pokemon === "object" && 'name' in pokemon && 'detailsUrl' in pokemon);
+    function addv(movie) {
+        return (typeof movie === "object" && 'id' in movie && 'title' in movie);
     }
 
-    function add(pokemon) {
-        if (addv(pokemon)) {
-            pokemonList.push(pokemon);
+    function add(movie) {
+        if (addv(movie)) {
+            movieList.push(movie);
         } else {
             document.write("Input is not a valid object!");
         }
     }
 
     function getAll() {
-        return pokemonList;
+        return movieList;
     }
 
-    function showDetails(pokemon) {
-        loadDetails(pokemon).then(function () {
-//            console.log(pokemon);
-            modalRepository.showModal(pokemon);
+    function showDetails(movie) {
+        loadDetails(movie).then(function () {
+//            console.log(movie);
+            modalRepository.showModal(movie);
         });
     }
 
-    function addListener (button, pokemon) {
+    function addListener (button, movie) {
         button.addEventListener('click', function () {
-            showDetails(pokemon);
+            showDetails(movie);
         }); 
     }
 
-    function addListItem(pokemon) {
-        let ulList = document.querySelector('.pokemon-list');
+    function addListItem(movie) {
+        let ulList = document.querySelector('.movie-list');
         let listItem = document.createElement('li');
         let button = document.createElement('button');
         listItem.classList.add('list-group-item');
-        button.innerText = pokemon.name;
+        button.innerText = movie.title;
         button.classList.add('liButton', 'btn', 'btn-primary');
         button.setAttribute('data-toggle', 'modal');
         button.setAttribute('data-target', '#modal-container');
         listItem.appendChild(button);
         ulList.appendChild(listItem);
 
-        addListener(button, pokemon);
+        addListener(button, movie);
     }
 
     function loadList() {
         return fetch(apiUrl).then(function (response) {
             return response.json();
         }).then(function(json) {
-            json.results.forEach(function (item) {
-                let pokemon = {
-                    name: item.name,
-                    detailsUrl: item.url
+ //           console.log(movieList);
+//            let jsonArray = JSON.stringify(json);
+            json.items.forEach(function (item) {
+                let movie = {
+                    id: item.id,
+                    title: item.title,
+                    imageUrl: item.image,
+                    year: item.year,
+                    rank: item.rank
                 };
-                add(pokemon);
+                add(movie);
             });
         }).catch(function (e) {
             console.error(e);
@@ -63,15 +68,16 @@ let pokemonRepository = (function () {
     }
 
     function loadDetails(item) {
-        let url = item.detailsUrl;
+//  Ned to pass in ID and add to the end of the API call
+        let url = `https://imdb-api.com/en/API/Ratings/k_vfofrs3q/${item.id}`;
         return fetch(url).then(function(response) {
             return response.json();
         }).then(function (details) {
             // Now we add the details to the item
-            item.imageUrl = details.sprites.front_default;
-            item.height = details.height;
-            item.weight = details.weight;
-            item.types = details.types;
+            item.imDb = details.imDb;
+            item.metacritic = details.metacritic;
+            item.theMovieDb = details.theMovieDb;
+            item.rottenTomatoes = details.rottenTomatoes;
         }).catch(function (e) {
             console.error(e);
         });
@@ -88,10 +94,10 @@ let pokemonRepository = (function () {
 
 let modalRepository = (function () {
     let modalContainer = document.querySelector('#modal-container');
-    const $ = window.$; // Function to display the modal with Pokemon data
+    const $ = window.$; // Function to display the modal with movie data
 
-    function showModal(pokemon) {
-//        console.log(pokemon);
+    function showModal(movie) {
+//        console.log(movie);
         let modalBody = $('.modal-body')
         let modalTitle = $('.modal-title');
 
@@ -99,26 +105,32 @@ let modalRepository = (function () {
         modalTitle.empty();
         modalBody.empty();
 
-        // Creating element for name in modal content
-        let pokemonName = $("<h1>" + pokemon.name + "</h1>");
+        // Creating element for title in modal content
+        let movieTitle = $("<h1>" + movie.title + "</h1>");
+        // Creating element for year in modal content
+        let movieYear = $("<p>" + "Year : " + movie.year + "</p>");
+        // Creating element for rank in modal content
+        let movieRank = $("<p>" + "Rank : " + movie.rank + "</p>");
         // Creating img in modal content
          let imageElement = $('<img class="modal-img" style="width:50%">');
-        imageElement.attr("src", pokemon.imageUrl);
-        // Creating element for height in modal content
-        let heightElement = $("<p>" + "height : " + pokemon.height + "</p>");
+        imageElement.attr("src", movie.imageUrl);
+        // Creating element for imDb Rating in modal content
+        let imDbElement = $("<p>" + "imDb Rating : " + movie.imDb + "</p>");
         // Creating element for weight in modal content
-        let weightElement = $("<p>" + "weight : " + pokemon.weight + "</p>");
-        // Creating element for type in modal content
-    //    let typesElement = $("<p>" + "types : " + pokemon.types + "</p>");
-        // Creating element for abilities in modal content
-    //    let abilitiesElement = $("<p>" + "abilities : " + pokemon.abilities + "</p>");
+        let metacriticElement = $("<p>" + "Metacritic Rating : " + movie.metacritic + "</p>");
+        // Creating element for theMovieDb Rating in modal content
+        let theMovieDbElement = $("<p>" + "theMovieDb Rating : " + movie.theMovieDb + "</p>");
+        // Creating element for rottenTomatoes in modal content
+        let rottenTomatoesElement = $("<p>" + "RottenTomatoes : " + movie.rottenTomatoes + "</p>");
 
-        modalTitle.append(pokemonName);
+        modalTitle.append(movieTitle);
+        modalBody.append(movieYear);
+        modalBody.append(movieRank);
         modalBody.append(imageElement);
-        modalBody.append(heightElement);
-        modalBody.append(weightElement);
-    //    modalBody.append(typesElement);
-    //    modalBody.append(abilitiesElement);
+        modalBody.append(imDbElement);
+        modalBody.append(metacriticElement);
+        modalBody.append(theMovieDbElement);
+        modalBody.append(rottenTomatoesElement);
     }
 
     function hideModal() {
@@ -140,9 +152,9 @@ let modalRepository = (function () {
     };
 })();
 
-pokemonRepository.loadList().then(function() {
+movieRepository.loadList().then(function() {
     // Now the data is loaded!
-    pokemonRepository.getAll().forEach(function(pokemon) {
-        pokemonRepository.addListItem(pokemon);
+    movieRepository.getAll().forEach(function(movie) {
+        movieRepository.addListItem(movie);
     });
 });
